@@ -11,27 +11,25 @@ app.get('/',function(req, res) {
 
 
 app.get('/:time', function (req, res) {
-    
     var time = req.params.time;
-    var html = {};
-    
-    var regex = /^[0-9]{10}/;
-    if(regex.test(time)) {
-        console.log('unix timestamp');
-        time *=1000;
+    if(time) {
+        var html = {};
+        
+        var regex = /^[0-9]{10}/;
+        if(regex.test(time)) {
+            console.log('unix timestamp');
+            time *=1000;
+        }
+        
+        if(moment(time).isValid()) {
+            html.unix = moment(time).format('X');
+            html.natural = moment(time).format('MMMM Do, YYYY');
+        } else {
+            html.unix = 'null';
+            html.natural = 'null';
+        }
+        res.send(html);
     }
-    
-    if(moment(time).isValid()) {
-        html.unix = moment(time).format('X');
-        html.natural = moment(time).format('MMMM Do, YYYY');
-    } else {
-        html.unix = 'null';
-        html.natural = 'null';
-    }
-    res.send(html);
 });
 
-
-app.listen(8080, function () {
-    console.log('server up!');
-});
+app.listen(process.env.PORT || 8080);
